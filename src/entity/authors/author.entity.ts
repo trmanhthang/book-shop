@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Book } from '../books/book.entity';
 
 @Entity()
 export class Author {
@@ -8,14 +9,17 @@ export class Author {
   @Column({ name: 'fullName' })
   private fullName: string;
 
-  @Column({ name: 'address' })
+  @Column({ name: 'address', nullable: true })
   private address: string;
 
-  @Column({ name: 'description' })
+  @Column({ name: 'description', length: '1000' })
   private description: string;
 
   @Column({ name: 'gender' })
   private gender: string;
+
+  @OneToMany(() => Book, (book) => book.author)
+  books: Book[];
 
   get getId(): number {
     return this.id;

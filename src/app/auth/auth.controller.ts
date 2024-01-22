@@ -1,13 +1,24 @@
-import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UserLogin, UserRegisterDto } from '../../dto/user.dto';
+import { Request } from 'express';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
-  async register(@Body() userRegister: UserRegisterDto, @Res() res: any) {
+  async register(@Body() userRegister: UserRegisterDto, @Res() res) {
     const flag = await this.authService.registerUser(userRegister);
 
     if (!flag) {
@@ -23,14 +34,18 @@ export class AuthController {
   }
 
   @Post('login')
-  async login(@Body() userLogin: UserLogin, @Res() res: any) {
-    const token = await this.authService.login(userLogin);
-    if (token) {
-      res.cookie('token', token, {
+  async login(@Body() userLogin: UserLogin, @Res() res) {
+    const data = await this.authService.login(userLogin);
+    if (data) {
+      res.cookie('token', data.token, {
         httpOnly: true,
         maxAge: 20 * 60 * 60 * 1000,
       });
       res.status(HttpStatus.OK).json({
+        user: {
+          username: data.user.username,
+          avatar: data.user.avatar,
+        },
         message: 'Đăng nhập thành công!',
       });
     } else {
@@ -38,5 +53,16 @@ export class AuthController {
         message: 'Sai email hoặc mật khẩu',
       });
     }
+  }
+
+  //
+  @Post('google')
+  @UseGuards(AuthGuard('google'))
+  async googleAuth() {}
+
+  @Get('oauth2google')
+  @UseGuards(AuthGuard('google'))
+  async googleAuthRedirect(@Req() req: Request) {
+    return req.user;
   }
 }

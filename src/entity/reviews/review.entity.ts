@@ -1,4 +1,10 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Book } from '../books/book.entity';
 import { User } from '../users/user.entity';
 
@@ -7,12 +13,13 @@ export class Review {
   @PrimaryGeneratedColumn({ name: 'id' })
   private id: number;
 
-  @ManyToOne(() => Book)
-  private book: Book;
+  @ManyToOne(() => Book, (book: Book) => book.reviews, { cascade: true })
+  @JoinColumn({ name: 'book_id' })
+  book: Book;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, (user: User) => user.reviews, { cascade: true })
   @JoinColumn({ name: 'user_id' })
-  private user: User;
+  user: User;
 
   @Column({ name: 'rating' })
   private rating: number;
@@ -29,22 +36,6 @@ export class Review {
 
   set setId(value: number) {
     this.id = value;
-  }
-
-  get getBook(): Book {
-    return this.book;
-  }
-
-  set setBook(value: Book) {
-    this.book = value;
-  }
-
-  get getUser(): User {
-    return this.user;
-  }
-
-  set setUser(value: User) {
-    this.user = value;
   }
 
   get getRating(): number {

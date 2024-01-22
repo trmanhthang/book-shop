@@ -1,6 +1,17 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Genre } from '../genres/genre.entity';
 import { Author } from '../authors/author.entity';
+import { Review } from '../reviews/review.entity';
+import { OrderDetail } from '../order_details/orderDetail.entity';
+import { CartDetail } from '../cart_details/cartDetail.entity';
 
 @Entity()
 export class Book {
@@ -10,8 +21,11 @@ export class Book {
   @Column({ name: 'title' })
   private title: string;
 
+  @Column({ name: 'image' })
+  private image: string;
+
   @Column({ name: 'publication_date' })
-  private publicationDate: Date;
+  private publicationDate: string;
 
   @Column({ name: 'price' })
   private price: number;
@@ -22,13 +36,21 @@ export class Book {
   @Column({ name: 'ISBN' })
   private ISBN: string;
 
-  @ManyToOne(() => Genre)
-  @JoinColumn({ name: 'genre_id' })
-  private genre: Genre;
+  @ManyToMany(() => Genre, { cascade: true })
+  @JoinTable({ name: 'book_genre' })
+  private genres: Genre[];
 
-  @ManyToOne(() => Author)
-  @JoinColumn({ name: 'author_id' })
-  private author: Author;
+  @ManyToOne(() => Author, (author: Author) => author.books, { cascade: true })
+  author: Author;
+
+  @OneToMany(() => Review, (review: Review) => review.book)
+  reviews: Review[];
+
+  @OneToMany(() => OrderDetail, (orderDetail: OrderDetail) => orderDetail.book)
+  orderDetails: OrderDetail[];
+
+  @OneToMany(() => CartDetail, (cartDetail: CartDetail) => cartDetail.book)
+  cartDetails: CartDetail[];
 
   get getId(): number {
     return this.id;
@@ -36,6 +58,14 @@ export class Book {
 
   set setId(value: number) {
     this.id = value;
+  }
+
+  get getImage(): string {
+    return this.image;
+  }
+
+  set setImage(value: string) {
+    this.image = value;
   }
 
   get getTitle(): string {
@@ -46,11 +76,11 @@ export class Book {
     this.title = value;
   }
 
-  get getPublicationDate(): Date {
+  get getPublicationDate(): string {
     return this.publicationDate;
   }
 
-  set setPublicationDate(value: Date) {
+  set setPublicationDate(value: string) {
     this.publicationDate = value;
   }
 
@@ -78,19 +108,11 @@ export class Book {
     this.ISBN = value;
   }
 
-  get getGenre(): Genre {
-    return this.genre;
+  get getGenre(): Genre[] {
+    return this.genres;
   }
 
-  set setGenre(value: Genre) {
-    this.genre = value;
-  }
-
-  get getAuthor(): Author {
-    return this.author;
-  }
-
-  set setAuthor(value: Author) {
-    this.author = value;
+  set setGenre(value: Genre[]) {
+    this.genres = value;
   }
 }

@@ -32,6 +32,7 @@ export class AuthService {
     const user = await this.userRepository
       .createQueryBuilder('user')
       .where('user.email = :email', { email: email })
+      .leftJoinAndSelect('user.role', 'role')
       .getOne();
     return !!user;
   }
@@ -41,7 +42,7 @@ export class AuthService {
       username: user.getUsername,
       password: user.getPassword,
       email: user.getEmail,
-      role: user.getRole,
+      role: user.role,
     };
     return this.jwtService.sign(payload);
   }
@@ -65,8 +66,7 @@ export class AuthService {
         avatar: userRegister.avatar,
         role: role,
       };
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
+
       await this.userRepository.save(userCreate);
       return true;
     }
@@ -75,9 +75,7 @@ export class AuthService {
   async login(userLogin: UserLogin) {
     const user = await this.userRepository
       .createQueryBuilder('user')
-      .where('user.email = :email', {
-        email: userLogin.email,
-      })
+      .where('user.email = :email', { email: userLogin.email })
       .leftJoinAndSelect('user.role', 'role')
       .getOne();
     if (user) {
@@ -86,16 +84,19 @@ export class AuthService {
         user.getPassword,
       );
       if (flag) {
-        return this.createToken(user);
+        const data = {
+          token: await this.createToken(user),
+          user: {
+            username: user.getUsername,
+            avatar: user.getAvatar,
+          },
+        };
+        return data;
       } else {
         return '';
       }
     } else {
       return '';
     }
-  }
-
-  testGraphQL() {
-    return this.userRepository.find();
   }
 }

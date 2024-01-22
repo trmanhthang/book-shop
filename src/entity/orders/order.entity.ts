@@ -1,14 +1,22 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { User } from '../users/user.entity';
+import { OrderDetail } from '../order_details/orderDetail.entity';
 
 @Entity()
 export class Order {
   @PrimaryGeneratedColumn({ name: 'id' })
   private id: number;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, (user: User) => user.orders, { cascade: true })
   @JoinColumn({ name: 'user_id' })
-  private user: User;
+  user: User;
 
   @Column({ name: 'order_date' })
   private oderDate: number = Date.now();
@@ -19,20 +27,15 @@ export class Order {
   @Column({ name: 'status' })
   private status: string;
 
+  @OneToMany(() => OrderDetail, (orderDetail: OrderDetail) => orderDetail.order)
+  orderDetails: OrderDetail[];
+
   get getId(): number {
     return this.id;
   }
 
   set setId(value: number) {
     this.id = value;
-  }
-
-  get getUser(): User {
-    return this.user;
-  }
-
-  set setUser(value: User) {
-    this.user = value;
   }
 
   get getOderDate(): number {

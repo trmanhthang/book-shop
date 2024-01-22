@@ -1,4 +1,10 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Order } from '../orders/order.entity';
 import { Book } from '../books/book.entity';
 
@@ -7,13 +13,15 @@ export class OrderDetail {
   @PrimaryGeneratedColumn({ name: 'id' })
   private id: number;
 
-  @ManyToOne(() => Order)
+  @ManyToOne(() => Order, (order: Order) => order.orderDetails, {
+    cascade: true,
+  })
   @JoinColumn({ name: 'order_id' })
-  private orders: Order[];
+  order: Order;
 
-  @ManyToOne(() => Book)
+  @ManyToOne(() => Book, (book: Book) => book.orderDetails, { cascade: true })
   @JoinColumn({ name: 'book_id' })
-  private book: Book;
+  book: Book;
 
   @Column({ name: 'quantity' })
   private quantity: number;
@@ -27,22 +35,6 @@ export class OrderDetail {
 
   set setId(value: number) {
     this.id = value;
-  }
-
-  get getOrders(): Order[] {
-    return this.orders;
-  }
-
-  set setOrders(value: Order[]) {
-    this.orders = value;
-  }
-
-  get getBook(): Book {
-    return this.book;
-  }
-
-  set setBook(value: Book) {
-    this.book = value;
   }
 
   get getQuantity(): number {

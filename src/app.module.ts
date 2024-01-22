@@ -2,18 +2,21 @@ import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './app/auth/auth.module';
 import cookieParser from 'cookie-parser';
-import { GraphQLModule } from '@nestjs/graphql';
-import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
+import { PassportModule } from '@nestjs/passport';
+import { BookModule } from './app/book/book.module';
+import { AuthorModule } from './app/author/author.module';
+import { GenreModule } from './app/genre/genre.module';
+import { OrderModule } from './app/order/order.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    PassportModule.register({ defaultStrategy: 'google' }),
     AuthModule,
-    GraphQLModule.forRoot<ApolloDriverConfig>({
-      driver: ApolloDriver,
-      playground: true,
-      autoSchemaFile: 'src/schema.gql',
-    }),
+    BookModule,
+    AuthorModule,
+    GenreModule,
+    OrderModule,
   ],
   providers: [],
 })

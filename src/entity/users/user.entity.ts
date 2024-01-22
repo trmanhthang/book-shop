@@ -3,9 +3,14 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Role } from '../roles/role.entity';
+import { Review } from '../reviews/review.entity';
+import { Order } from '../orders/order.entity';
+import { Cart } from '../carts/cart.entity';
 
 @Entity()
 export class User {
@@ -25,18 +30,27 @@ export class User {
   private fullName: string;
 
   @Column({
-    name: 'avatar',
     default:
       'https://cdn.sforum.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg',
   })
   private avatar: string;
 
-  @Column({ name: 'status', default: true })
+  @Column({ default: true })
   private status: boolean;
 
-  @ManyToOne(() => Role)
-  @JoinColumn({ name: 'role' })
-  private role: Role;
+  @OneToOne(() => Cart, (cart: Cart) => cart.user, { cascade: true })
+  @JoinColumn({ name: 'cart_id' })
+  cart: Cart;
+
+  @ManyToOne(() => Role, (role: Role) => role.users, { cascade: true })
+  @JoinColumn({ name: 'role_id' })
+  role: Role;
+
+  @OneToMany(() => Review, (review: Review) => review.user)
+  reviews: Review[];
+
+  @OneToMany(() => Order, (order: Order) => order.user)
+  orders: Order[];
 
   get getId(): number {
     return this.id;
@@ -92,13 +106,5 @@ export class User {
 
   set setStatus(value: boolean) {
     this.status = value;
-  }
-
-  get getRole(): Role {
-    return this.role;
-  }
-
-  set setRole(value: Role) {
-    this.role = value;
   }
 }

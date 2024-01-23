@@ -24,8 +24,7 @@ export class AuthService {
     password: string,
     hashPassword: string,
   ): Promise<boolean> {
-    const flag = await bcrypt.compare(password, hashPassword);
-    return flag;
+    return await bcrypt.compare(password, hashPassword);
   }
 
   async checkUserByEmail(email: string): Promise<boolean> {
@@ -39,9 +38,9 @@ export class AuthService {
 
   async createToken(user: User): Promise<string> {
     const payload = {
-      username: user.getUsername,
-      password: user.getPassword,
-      email: user.getEmail,
+      username: user.username,
+      password: user.password,
+      email: user.email,
       role: user.role,
     };
     return this.jwtService.sign(payload);
@@ -65,6 +64,7 @@ export class AuthService {
         fullName: userRegister.fullName,
         avatar: userRegister.avatar,
         role: role,
+        cart: {},
       };
 
       await this.userRepository.save(userCreate);
@@ -77,21 +77,21 @@ export class AuthService {
       .createQueryBuilder('user')
       .where('user.email = :email', { email: userLogin.email })
       .leftJoinAndSelect('user.role', 'role')
+      .leftJoinAndSelect('user.cart', 'cart')
+      .leftJoinAndSelect('cart.cartDetails', 'cart_detail')
       .getOne();
     if (user) {
-      const flag = await this.checkPassword(
-        userLogin.password,
-        user.getPassword,
-      );
+      const flag = await this.checkPassword(userLogin.password, user.password);
       if (flag) {
-        const data = {
+        return {
           token: await this.createToken(user),
           user: {
-            username: user.getUsername,
-            avatar: user.getAvatar,
+            id: user.id,
+            username: user.username,
+            avatar: user.avatar,
+            cart: user.cart,
           },
         };
-        return data;
       } else {
         return '';
       }

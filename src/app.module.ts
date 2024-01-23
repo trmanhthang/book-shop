@@ -7,6 +7,8 @@ import { BookModule } from './app/book/book.module';
 import { AuthorModule } from './app/author/author.module';
 import { GenreModule } from './app/genre/genre.module';
 import { OrderModule } from './app/order/order.module';
+import { ReviewModule } from './app/review/review.module';
+import { CartModule } from './app/cart/cart.module';
 
 @Module({
   imports: [
@@ -17,6 +19,8 @@ import { OrderModule } from './app/order/order.module';
     AuthorModule,
     GenreModule,
     OrderModule,
+    ReviewModule,
+    CartModule,
   ],
   providers: [],
 })

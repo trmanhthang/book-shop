@@ -10,8 +10,6 @@ export class AuthorService {
     private readonly authorRepository: Repository<Author>,
   ) {}
   async save(author: AuthorDTO) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
     await this.authorRepository.save(author);
   }
 

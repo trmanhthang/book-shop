@@ -43,8 +43,10 @@ export class AuthController {
       });
       res.status(HttpStatus.OK).json({
         user: {
+          id: data.user.id,
           username: data.user.username,
           avatar: data.user.avatar,
+          cart: data.user.cart,
         },
         message: 'Đăng nhập thành công!',
       });

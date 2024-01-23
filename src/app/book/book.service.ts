@@ -11,12 +11,11 @@ export class BookService {
   ) {}
 
   async getAllBook(): Promise<Book[]> {
-    const listBook = await this.bookRepository
+    return await this.bookRepository
       .createQueryBuilder('book')
       .leftJoinAndSelect('book.genres', 'genre')
       .leftJoinAndSelect('book.author', 'author')
       .getMany();
-    return listBook;
   }
 
   async saveBook(book: BookDto): Promise<void> {
@@ -24,11 +23,14 @@ export class BookService {
   }
 
   async getOne(id: string) {
-    return await this. bookRepository
+    return await this.bookRepository
       .createQueryBuilder('book')
       .where('book.id = :id', { id: id })
       .leftJoinAndSelect('book.genres', 'genre')
       .leftJoinAndSelect('book.author', 'author')
+      .leftJoinAndSelect('book.reviews', 'reviews')
+      .leftJoinAndSelect('reviews.user', 'user')
+      .where('book.id = :id', { id: id })
       .getOne();
   }
 }

@@ -3,7 +3,6 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Cart } from '../carts/cart.entity';
@@ -12,39 +11,19 @@ import { Book } from '../books/book.entity';
 @Entity()
 export class CartDetail {
   @PrimaryGeneratedColumn()
-  private id: number;
+  id: number;
 
-  @OneToOne(() => Cart, (cart: Cart) => cart.cartDetail)
+  @ManyToOne(() => Cart, (cart: Cart) => cart.cartDetails, { cascade: true })
   @JoinColumn()
   cart: Cart;
 
   @ManyToOne(() => Book, (book: Book) => book.cartDetails, { cascade: true })
-  @JoinColumn({ name: 'book_id' })
+  @JoinColumn()
   book: Book;
 
   @Column()
-  private quantity: number;
+  quantity: number;
 
   @Column()
-  private subtotal: number;
-
-  get getId() {
-    return this.id;
-  }
-
-  get getQuantity() {
-    return this.quantity;
-  }
-
-  set setQuantity(value: number) {
-    this.quantity = value;
-  }
-
-  get getSubtotal() {
-    return this.subtotal;
-  }
-
-  set setSubtotal(value: number) {
-    this.subtotal = value;
-  }
+  subtotal: number;
 }

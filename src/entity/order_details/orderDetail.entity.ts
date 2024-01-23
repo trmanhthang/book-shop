@@ -11,7 +11,7 @@ import { Book } from '../books/book.entity';
 @Entity()
 export class OrderDetail {
   @PrimaryGeneratedColumn({ name: 'id' })
-  private id: number;
+  id: number;
 
   @ManyToOne(() => Order, (order: Order) => order.orderDetails, {
     cascade: true,
@@ -24,32 +24,8 @@ export class OrderDetail {
   book: Book;
 
   @Column({ name: 'quantity' })
-  private quantity: number;
+  quantity: number;
 
   @Column({ name: 'subtotal' })
-  private subtotal: number;
-
-  get getId(): number {
-    return this.id;
-  }
-
-  set setId(value: number) {
-    this.id = value;
-  }
-
-  get getQuantity(): number {
-    return this.quantity;
-  }
-
-  set setQuantity(value: number) {
-    this.quantity = value;
-  }
-
-  get getSubtotal(): number {
-    return this.subtotal;
-  }
-
-  set setSubtotal(value: number) {
-    this.subtotal = value;
-  }
+  subtotal: number;
 }

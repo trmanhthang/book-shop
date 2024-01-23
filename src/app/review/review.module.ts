@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
 import { reviewProviders } from '../../entity/reviews/review.providers';
-import { DataSource } from 'typeorm';
+import { ReviewController } from './review.controller';
+import { DatabaseModule } from '../../config/database/database.module';
+import { ReviewService } from './review.service';
 
 @Module({
-  imports: [DataSource],
-  controllers: [],
-  providers: [...reviewProviders],
-  exports: [],
+  imports: [DatabaseModule],
+  controllers: [ReviewController],
+  providers: [...reviewProviders, ReviewService],
+  exports: [ReviewService],
 })
 export class ReviewModule {}

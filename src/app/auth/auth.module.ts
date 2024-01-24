@@ -7,10 +7,12 @@ import { userProviders } from '../../entity/users/user.providers';
 import { roleProviders } from '../../entity/roles/role.providers';
 import { jwtConstants } from './constants';
 import { GoogleOauthStrategy } from '../../config/strategy/google/google-oauth.strategy';
+import { CartModule } from '../cart/cart.module';
 
 @Module({
   imports: [
     DatabaseModule,
+    CartModule,
     JwtModule.register({
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '24h' },

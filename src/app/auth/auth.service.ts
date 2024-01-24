@@ -5,6 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UserLogin, UserRegisterDto } from '../../dto/user.dto';
 import * as bcrypt from 'bcryptjs';
 import { Role } from '../../entity/roles/role.entity';
+import { CartService } from '../cart/cart.service';
 
 @Injectable()
 export class AuthService {
@@ -14,6 +15,7 @@ export class AuthService {
     @Inject('ROLE_REPOSITORY')
     private readonly roleRepository: Repository<Role>,
     private readonly jwtService: JwtService,
+    private readonly cartService: CartService,
   ) {}
 
   async hashPassword(password: string): Promise<string> {
@@ -30,8 +32,8 @@ export class AuthService {
   async checkUserByEmail(email: string): Promise<boolean> {
     const user = await this.userRepository
       .createQueryBuilder('user')
-      .where('user.email = :email', { email: email })
       .leftJoinAndSelect('user.role', 'role')
+      .where('user.email = :email', { email: email })
       .getOne();
     return !!user;
   }
@@ -77,8 +79,6 @@ export class AuthService {
       .createQueryBuilder('user')
       .where('user.email = :email', { email: userLogin.email })
       .leftJoinAndSelect('user.role', 'role')
-      .leftJoinAndSelect('user.cart', 'cart')
-      .leftJoinAndSelect('cart.cartDetails', 'cart_detail')
       .getOne();
     if (user) {
       const flag = await this.checkPassword(userLogin.password, user.password);
@@ -89,7 +89,7 @@ export class AuthService {
             id: user.id,
             username: user.username,
             avatar: user.avatar,
-            cart: user.cart,
+            cart: await this.cartService.getOneByUser(user.id),
           },
         };
       } else {

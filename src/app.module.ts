@@ -14,13 +14,13 @@ import { CartModule } from './app/cart/cart.module';
   imports: [
     ConfigModule.forRoot(),
     PassportModule.register({ defaultStrategy: 'google' }),
+    CartModule,
     AuthModule,
     BookModule,
     AuthorModule,
     GenreModule,
     OrderModule,
     ReviewModule,
-    CartModule,
   ],
   providers: [],
 })

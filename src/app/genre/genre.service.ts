@@ -10,13 +10,6 @@ export class GenreService {
     private readonly genreRepository: Repository<Genre>,
   ) {}
 
-  async getAllGenre(): Promise<Genre[]> {
-    return await this.genreRepository
-      .createQueryBuilder('genre')
-      .leftJoinAndSelect('genre.books', 'books')
-      .getMany();
-  }
-
   async getAllGenreCategory(): Promise<Genre[]> {
     return await this.genreRepository.createQueryBuilder('genre').getMany();
   }

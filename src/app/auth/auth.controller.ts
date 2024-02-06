@@ -34,20 +34,16 @@ export class AuthController {
   }
 
   @Post('login')
-  async login(@Body() userLogin: UserLogin, @Res() res) {
+  async login(@Body() userLogin: UserLogin, @Res() res, @Req() req) {
     const data = await this.authService.login(userLogin);
     if (data) {
       res.cookie('token', data.token, {
         httpOnly: true,
         maxAge: 20 * 60 * 60 * 1000,
       });
+      req.user = data.user;
       res.status(HttpStatus.OK).json({
-        user: {
-          id: data.user.id,
-          username: data.user.username,
-          avatar: data.user.avatar,
-          cart: data.user.cart,
-        },
+        user: data.user,
         message: 'Đăng nhập thành công!',
       });
     } else {

@@ -6,11 +6,6 @@ import { GenreDto } from '../../dto/genre.dto';
 export class GenreController {
   constructor(private readonly genreService: GenreService) {}
 
-  @Get('all')
-  async getAllGenre() {
-    return await this.genreService.getAllGenre();
-  }
-
   @Get('category')
   async getAllGenreCategory() {
     return await this.genreService.getAllGenreCategory();

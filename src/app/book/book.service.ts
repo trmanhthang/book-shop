@@ -63,4 +63,40 @@ export class BookService {
       .where('book.slug = :slug', { slug: slug })
       .getOne();
   }
+
+  async getBookByGenre(id: string) {
+    return await this.bookRepository
+      .createQueryBuilder('book')
+      .leftJoinAndSelect('book.genres', 'genres')
+      .where('genres.id = :id', { id: id })
+      .select([
+        'book.id',
+        'book.title',
+        'book.publication_date',
+        'book.price',
+        'book.quantity',
+        'book.ISBN',
+        'book.image',
+        'book.slug',
+      ])
+      .getMany();
+  }
+
+  async getBookByAuthor(id: string) {
+    return await this.bookRepository
+      .createQueryBuilder('book')
+      .leftJoinAndSelect('book.author', 'author')
+      .where('author.id = :id', { id: id })
+      .select([
+        'book.id',
+        'book.title',
+        'book.publication_date',
+        'book.price',
+        'book.quantity',
+        'book.ISBN',
+        'book.image',
+        'book.slug',
+      ])
+      .getMany();
+  }
 }

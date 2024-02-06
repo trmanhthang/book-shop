@@ -45,7 +45,7 @@ export class CartService {
   async getOneById(id: number) {
     return this.cartRepository
       .createQueryBuilder('cart')
-      .where('cart.id = :id', { id: id })
+      .leftJoinAndSelect('cart.user', 'user')
       .leftJoinAndSelect('cart.cartDetails', 'cart_details')
       .leftJoinAndSelect('cart_details.book', 'book')
       .leftJoinAndSelect('book.author', 'author')

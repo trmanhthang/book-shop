@@ -79,6 +79,13 @@ export class AuthService {
       .createQueryBuilder('user')
       .where('user.email = :email', { email: userLogin.email })
       .leftJoinAndSelect('user.role', 'role')
+      .select([
+        'user.id',
+        'user.username',
+        'user.avatar',
+        'user.password',
+        'role.role',
+      ])
       .getOne();
     if (user) {
       const flag = await this.checkPassword(userLogin.password, user.password);
@@ -89,7 +96,7 @@ export class AuthService {
             id: user.id,
             username: user.username,
             avatar: user.avatar,
-            cart: await this.cartService.getOneByUser(user.id),
+            role: user.role,
           },
         };
       } else {

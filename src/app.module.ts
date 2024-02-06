@@ -24,9 +24,4 @@ import { CartModule } from './app/cart/cart.module';
   ],
   providers: [],
 })
-export class AppModule {
-  configure(consumer: MiddlewareConsumer): void {
-    // Sử dụng cookie-parser middleware cho tất cả các routes
-    consumer.apply(cookieParser).forRoutes('*');
-  }
-}
+export class AppModule {}

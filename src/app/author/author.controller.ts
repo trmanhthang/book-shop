@@ -15,6 +15,9 @@ import { Author } from '../../entity/authors/author.entity';
 export class AuthorController {
   constructor(private readonly authorService: AuthorService) {}
 
+  /**
+   * Thêm 1 tác giả
+   * **/
   @Post('save')
   async saveAuthor(@Body() author: AuthorDTO, @Res() res) {
     try {
@@ -31,11 +34,17 @@ export class AuthorController {
     }
   }
 
+  /**
+   * Lấy tất cả tác giả
+   * **/
   @Get('all')
   async getAllAuthor(): Promise<Author[]> {
     return await this.authorService.getAll();
   }
 
+  /**
+   * Lấy thông tin chi tiết 1 tác giả
+   * **/
   @Get('/:id')
   async getOne(@Param('id') id: string, @Res() res) {
     const author = await this.authorService.getOne(id);

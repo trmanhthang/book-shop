@@ -1,6 +1,15 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  Res,
+} from '@nestjs/common';
 import { CartService } from './cart.service';
 import { CartDetailService } from './cart-detail.service';
+import { SaveCartDto } from '../../dto/cart.dto';
 
 @Controller('cart')
 export class CartController {
@@ -9,8 +18,21 @@ export class CartController {
     private readonly cartDetailService: CartDetailService,
   ) {}
 
-  @Get('get_one/:id')
-  async getOne(@Param('id') id: number) {
-    return await this.cartService.getOneByUser(id);
+  @Post('save')
+  async addToCart(@Body() data: SaveCartDto, @Res() res) {
+    const value = await this.cartDetailService.save(data);
+    if (value) {
+      res.status(HttpStatus.OK).json(value);
+    } else {
+      res.status(HttpStatus.BAD_REQUEST).json({
+        message: 'Đã có lỗi xảy ra!',
+      });
+    }
+  }
+
+  @Get(':id')
+  async getOne(@Param('id') id: number, @Res() res) {
+    const cart = await this.cartService.getOneById(id);
+    res.json(cart);
   }
 }

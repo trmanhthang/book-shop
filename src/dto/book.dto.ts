@@ -31,4 +31,6 @@ export class BookDto {
 
   @IsNotEmpty()
   author: Author;
+
+  slug: string;
 }

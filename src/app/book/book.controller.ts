@@ -35,9 +35,9 @@ export class BookController {
     }
   }
 
-  @Get('/:id')
-  async getOne(@Param('id') id: string, @Res() res) {
-    const book = await this.bookService.getOne(id);
+  @Get('/:slug')
+  async getOne(@Param('slug') slug: string, @Res() res) {
+    const book = await this.bookService.getOneBySlug(slug);
     if (book) {
       res.status(HttpStatus.OK).json(book);
     } else {

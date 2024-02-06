@@ -13,7 +13,7 @@ export class Cart {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: 'total_amount', nullable: true })
+  @Column({ name: 'total_amount', nullable: true, default: 0 })
   totalAmount: number;
 
   @OneToOne(() => User, (user: User) => user.cart)

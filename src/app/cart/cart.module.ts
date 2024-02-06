@@ -5,9 +5,10 @@ import { CartDetailService } from './cart-detail.service';
 import { DatabaseModule } from '../../config/database/database.module';
 import { cartDetailProvider } from '../../entity/cart_details/cartDetail.provider';
 import { cartProviders } from '../../entity/carts/cart.provider';
+import { BookModule } from "../book/book.module";
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, BookModule],
   controllers: [CartController],
   providers: [
     ...cartProviders,
